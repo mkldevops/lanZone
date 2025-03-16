@@ -1,39 +1,39 @@
-services: 
-
+services:
   app:
     build: .
     ports:
       - "3001:3000"
-      #volumes= donne qu'on persiste dans le dossier uploads
     volumes:
-      # - ./uploads:/app/uploads
       - .:/app
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-password}@database/${POSTGRES_DB:-app}
+      - DATABASE_URL=postgresql://app:${POSTGRES_PASSWORD:-password}@database/app?schema=public
+
     depends_on:
-      - database
+      database:
+        condition: service_healthy
 
   database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    image: postgres:17-alpine
     ports:
       - 30011:5432
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
+      POSTGRES_DB: app
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_USER: app
     healthcheck:
-      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-app}", "-U", "${POSTGRES_USER:-app}"]
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+      test: ["CMD-SHELL", "pg_isready -d app -U app"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
+    # Augmenter les ressources allouées à PostgreSQL
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
 
 volumes:
-###> doctrine/doctrine-bundle ###
   database_data:
-###< doctrine/doctrine-bundle ###

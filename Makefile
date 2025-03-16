@@ -1,13 +1,20 @@
-docker-compose:
+down:
+	docker compose down --remove-orphans
 
-    docker-compose up -d
+destroy:
+	docker compose down --remove-orphans --volumes
 
-build:
-    docker build -t alyzee/projet_final .
+up: down
+	docker compose up -d --build
+	docker compose ps
+	$(MAKE) logs
+	$(MAKE) sh
 
-run:
-    docker rm -f luminapay || true
-    docker run -p 3000:3000 --name luminapay hindblgcm/luminapay
+logs:
+	docker compose logs app
 
-ssh : 
-    ssh alyzee@51.91.208.111
+sh:
+	docker compose exec -it app sh
+
+ssh: 
+	ssh alyzee@51.91.208.111

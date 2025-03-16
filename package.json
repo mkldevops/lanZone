@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
     "seed": "node prisma/seed.js",
-    "start": "npx prisma generate; npx prisma migrate dev; node app.js"
+    "start": "npx prisma generate && npx prisma migrate deploy && node app.js"
   },
   "author": "Alyzée",
   "license": "ISC",
@@ -16,9 +16,9 @@
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/google-calendar": "^6.1.15",
     "@prisma/client": "^6.5.0",
-    "axios": "^1.7.9",
+    "axios": "^1.8.3",
     "bcrypt": "^5.1.1",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "express-session": "^1.18.1",
     "luxon": "^3.5.0",
     "twig": "^1.17.1"
